@@ -1,0 +1,187 @@
+<div class="tituloPagina">
+  {{ Titulo }}
+</div>
+
+<!-- tabla de resultados -->
+<div class="container-fluid" *ngIf="banderaArchivos == false">
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+      <table class="table table-hover table-sm table-bordered table-striped">
+        <thead>
+          <tr>
+            <th class="text-center">Archivo</th>
+            <th class="text-center">Vistas</th>
+            <th class="text-center">Activo</th>
+            <th class="text-center">Modificar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of Items">
+            <td>{{ item.archivo | uppercase }}</td>
+            <td>{{ item.vistas }}</td>
+            <td>{{ item.activo }}</td>
+            <td class="text-center text-nowrap">
+              <button
+                class="btn btn-sm btn-outline-primary"
+                title="Modificar"
+                (click)="Modificar(item)"
+              >
+                <i class="fa fa-pencil"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="col-2"></div>
+  </div>
+</div>
+
+<!-- Registro en Alta,Modificacion y Consulta -->
+<form
+  name="FormModificacion"
+  [formGroup]="FormModificacion"
+  *ngIf="banderaModificacion == true"
+>
+  <div class="container">
+    <fieldset>
+      <!--campo archivo-->
+      <div class="row">
+        <div class="col-sm-4 col-md-3 offset-md-1">
+          <label class="col-form-label" for="archivo"
+            >archivo<span class="text-danger">*</span>:</label
+          >
+        </div>
+        <div class="col-sm-8 col-md-6">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="archivo"
+            [ngClass]="{
+              'is-invalid':
+                (FormModificacion.controls['archivo'].touched || submitted) &&
+                FormModificacion.controls['archivo'].errors
+            }"
+          />
+
+          <div
+            class="validacion"
+            *ngIf="
+              (FormModificacion.controls['archivo'].touched || submitted) &&
+              FormModificacion.controls['archivo'].hasError('required')
+            "
+          >
+            Dato requerido.
+          </div>
+          <div
+            class="validacion"
+            *ngIf="
+              (FormModificacion.controls['archivo'].touched || submitted) &&
+              (FormModificacion.controls['archivo'].hasError('minlength') ||
+                FormModificacion.controls['archivo'].hasError('maxlength'))
+            "
+          >
+            Dato texto, mas de 4 caracteres.
+          </div>
+        </div>
+      </div>
+
+      <!--campo vistas-->
+      <div class="row">
+        <div class="col-sm-4 col-md-3 offset-md-1">
+          <label class="col-form-label" for="vistas">
+            vistas<span class="text-danger">*</span>:
+          </label>
+        </div>
+        <div class="col-sm-8 col-md-6">
+          <input
+            type="text"
+            name="vistas"
+            class="form-control"
+            formControlName="vistas"
+            [ngClass]="{
+              'is-invalid':
+                (FormModificacion.controls['vistas'].touched || submitted) &&
+                FormModificacion.controls['vistas'].errors
+            }"
+          />
+          <div
+            class="validacion"
+            *ngIf="
+              (FormModificacion.controls['vistas'].touched || submitted) &&
+              FormModificacion.controls['vistas'].hasError('required')
+            "
+          >
+            Dato requerido.
+          </div>
+          <div
+            class="validacion"
+            *ngIf="
+              (FormModificacion.controls['vistas'].touched || submitted) &&
+              FormModificacion.controls['vistas'].hasError('pattern')
+            "
+          >
+            Dato numérico.
+          </div>
+        </div>
+      </div>
+
+      <!--campo activo-->
+      <div class="row">
+        <div class="col-sm-4 col-md-3 offset-md-1">
+          <label class="col-form-label" for="activo"
+            >activo<span class="text-danger">*</span>:</label
+          >
+        </div>
+        <div class="col-sm-8 col-md-6">
+          <!-- ref?? disabled html no fucniona en reactive forms? -->
+          <select
+            class="form-control"
+            name="activo"
+            formControlName="activo"
+            [disabled]="true"
+            [ngClass]="{
+              'is-invalid':
+                (FormModificacion.controls['activo'].touched || submitted) &&
+                FormModificacion.controls['activo'].errors
+            }"
+          >
+            <option *ngFor="let opt of OpcionesActivo" [ngValue]="opt.Id">
+              ‌{{ opt.Nombre }}
+            </option>
+          </select>
+          <div
+            class="validacion"
+            *ngIf="
+              (FormModificacion.controls['activo'].touched || submitted) &&
+              FormModificacion.controls['activo'].hasError('required')
+            "
+          >
+            Dato requerido.
+          </div>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Botones Guardar, Cancelar/Volver' -->
+    <hr />
+    <div class="row justify-content-center botones">
+      <button type="button" class="btn btn-primary" (click)="Guardar()">
+        <i class="fa fa-check"></i> Guardar
+      </button>
+      &nbsp;
+      <button type="button" class="btn btn-warning" (click)="Cancelar()">
+        <i class="fa fa-undo"></i> Cancelar
+      </button>
+    </div>
+
+    <!--texto: Revisar los datos ingresados...-->
+    <div
+      *ngIf="submitted && FormModificacion.invalid"
+      class="row alert alert-danger mensajesAlert"
+    >
+      <i class="fa fa-exclamation-sign"></i>{{ Mensajes['RD'] }}
+    </div>
+  </div>
+</form>
